@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "105087014804",
+    "project_id": "liness-b5457",
+    "storage_bucket": "liness-b5457.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105087014804:android:e57facaa43d13f8d68e181",
+        "android_client_info": {
+          "package_name": "com.liness.linessEducationsApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhaDzex1x1r2rmSNN55_vVNl-_SbRFuKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

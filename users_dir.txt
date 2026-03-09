@@ -1,0 +1,10 @@
+ Volume in drive C has no label.
+ Volume Serial Number is 08B3-71EE
+
+ Directory of C:\Users
+
+06/19/2025  00:17    <DIR>                       .
+12/30/2025  23:08    <DIR>          MOHAME~1     Mohamed Khaled
+06/19/2025  10:01    <DIR>                       Public
+               0 File(s)              0 bytes
+               3 Dir(s)  40,036,376,576 bytes free

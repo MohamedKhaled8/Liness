@@ -1,0 +1,140 @@
+name: liness
+description: A new Flutter project.
+publish_to: 'none' # Prevent publishing to pub.dev
+
+version: 2.0.0+41
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: 0.20.2  
+  cupertino_icons: ^1.0.2
+  cached_network_image:
+  image_picker:
+  lottie: ^3.1.2
+  dio:
+  equatable:
+  get_it:
+  quickalert: 1.1.0
+  flutter_secure_storage: ^9.2.2
+  flutter_svg: ^2.0.10+1
+  smooth_page_indicator: ^1.2.0+3
+  iconsax:
+  carousel_slider: ^5.0.0
+  animated_text_kit:
+  path_provider:
+  path:
+  shrink_sidemenu: ^2.0.0+2-null-safety
+  flutter_staggered_animations: ^1.1.1
+  dartz:
+  # pretty_dio_logger: ^1.4.0
+  font_awesome_flutter: ^10.1.0
+  flutter_countdown_timer: ^4.1.0
+  connectivity_plus: ^6.1.4
+  shimmer: ^3.0.0
+  url_launcher: ^6.3.0
+  # pod_player: ^0.2.1
+  # mobile_device_identifier: ^0.0.2
+  # vimeo_video_player_custom: ^0.0.1
+  flutter_inappwebview: ^6.1.3
+  encrypt: ^5.0.0
+  win32: ^5.5.4
+  hex: ^0.2.0
+  # vimeo_player_flutter: ^0.1.0
+  # vimeoplayer_trinity: ^0.3.0
+  # max_player: ^1.1.3
+  vimeo_embed_player: ^1.0.2
+  screen_go:
+  http:
+  device_info_plus:
+  draggable_fab: ^0.1.4
+  # device_preview: ^1.2.0
+  awesome_dialog:
+  curved_navigation_bar: ^1.0.6
+  upgrader: ^11.3.1
+  in_app_update: ^4.2.3
+  # video_player: ^2.9.2
+  # safe_device: ^1.1.9
+  vibration:
+  vibration_ohos: any 
+  flutter_localization: ^0.3.3
+  marquee:
+  # webview_windows: ^0.4.0
+  # youtube_player_iframe: ^5.2.1
+  # webview_flutter: ^4.10.0
+  # webview_flutter_android: ^4.2.0
+  # webview_flutter_wkwebview: ^3.16.3
+  # flutter_vlc_player: ^7.4.2
+  connectivity_monitor: ^1.0.2
+  shared_preferences: ^2.5.2
+  fluttertoast: ^8.2.12
+  flutter_bloc: ^9.1.1
+  youtube_player_embed: ^1.6.4
+  youtube_player_iframe:
+  webview_flutter: ^4.12.0
+  webview_flutter_android:
+  webview_flutter_platform_interface:
+  firebase_core: ^3.15.2
+  firebase_crashlytics: ^4.3.10
+  audioplayers: ^6.1.0
+
+
+ 
+
+
+  
+  
+  
+  # youtube_player_embed: ^1.0.8
+  # video_player: ^2.9.2
+  
+
+
+dependency_overrides:
+  # win32: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+
+flutter:
+  uses-material-design: true
+
+
+  assets:
+    - assets/images/
+    - assets/images/jpg/
+    - assets/images/png/
+    - assets/images/svg/
+    - assets/images/json/
+    - assets/localization/
+    - shorebird.yaml
+
+  fonts:
+    - family: Intel
+      fonts:
+        - asset: assets/Fonts/Inter-Regular.ttf
+        - asset: assets/Fonts/Inter-SemiBold.ttf
+          weight: 600
+    - family: Poppins
+      fonts:
+        - asset: assets/Fonts/Poppins-Bold.ttf
+          weight: 700
+    - family: ProtestGuerrilla-Regular
+      fonts:
+        - asset: assets/Fonts/ProtestGuerrilla-Regular.ttf
+          # weight: 700
+    - family: Almarai
+      fonts:
+        - asset: assets/fonts/Almarai-Regular.ttf
+        - asset: assets/fonts/Almarai-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Almarai-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Almarai-ExtraBold.ttf
+          weight: 800

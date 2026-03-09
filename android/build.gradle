@@ -1,0 +1,43 @@
+// ✅ يجب أن يكون buildscript أولًا
+buildscript {
+    ext.kotlin_version = '2.1.10'
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.9.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Temporarily disabled so project can be built without Firebase config
+        // Re-enable these after you register the new package name in Firebase
+        // and place the downloaded `google-services.json` into android/app/.
+        // classpath 'com.google.gms:google-services:4.4.3'
+        // classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+    }
+}
+
+// ✅ plugins بعدها
+plugins {
+    // فقط لتحديد النسخة بدون تطبيقها هنا
+    id("com.google.gms.google-services") version "4.4.3" apply false
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean") {
+    delete rootProject.buildDir
+}
+

@@ -1,0 +1,37 @@
+[√] Flutter (Channel stable, 3.38.5, on Microsoft Windows [Version 10.0.26200.7462], locale en-US) [640ms]
+    • Flutter version 3.38.5 on channel stable at C:\src\flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision f6ff1529fd (7 days ago), 2025-12-11 11:50:07 -0500
+    • Engine revision 1527ae0ec5
+    • Dart version 3.10.4
+    • DevTools version 2.51.1
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, omit-legacy-version-file, enable-lldb-debugging
+
+[√] Windows Version (Windows 11 or higher, 25H2, 2009) [2.0s]
+
+[!] Android toolchain - develop for Android devices (Android SDK version 36.0.0) [1,077ms]
+    • Android SDK at C:\Users\Mohamed Khaled\AppData\Local\Android\sdk
+    • Emulator version 35.6.11.0 (build_id 13610412) (CL:N/A)
+    • Platform android-36, build-tools 36.0.0
+    X Android SDK location currently contains spaces, which is not supported by the Android SDK as it causes problems with NDK tools. Try moving it from C:\Users\Mohamed Khaled\AppData\Local\Android\sdk to a path without spaces.
+    • Try re-installing or updating your Android SDK,
+      visit https://flutter.dev/to/windows-android-setup for detailed instructions.
+
+[√] Chrome - develop for the web [32ms]
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[X] Visual Studio - develop Windows apps [29ms]
+    X Visual Studio not installed; this is necessary to develop Windows apps.
+      Download at https://visualstudio.microsoft.com/downloads/.
+      Please install the "Desktop development with C++" workload, including all of its default components
+
+[√] Connected device (4 available) [1,214ms]
+    • SM A736B (mobile) • R5CTA1CFR5B • android-arm64  • Android 16 (API 36)
+    • Windows (desktop) • windows     • windows-x64    • Microsoft Windows [Version 10.0.26200.7462]
+    • Chrome (web)      • chrome      • web-javascript • Google Chrome 143.0.7499.170
+    • Edge (web)        • edge        • web-javascript • Microsoft Edge 143.0.3650.96
+
+[√] Network resources [431ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 2 categories.
