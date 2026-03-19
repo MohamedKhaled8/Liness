@@ -1,4 +1,4 @@
-package com.liness.linessEducationsApp.stub
+package com.liness.appnew.stub
 
 // This file was renamed to avoid duplicate `MainActivity` definitions after
 // switching the app package. It is kept as a harmless stub for now.

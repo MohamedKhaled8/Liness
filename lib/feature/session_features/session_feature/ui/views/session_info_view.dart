@@ -15,6 +15,7 @@ import '../../helper/functions/get_session_type_from_session_enum_funx.dart';
 import 'package:liness/feature/session_features/session_feature/model/data/session_model.dart';
 import 'package:liness/feature/session_features/session_feature/_logic/cubits/session_cubit.dart';
 import 'package:liness/feature/session_features/session_feature/_logic/states/session_state.dart';
+import 'package:liness/feature/session_features/session_feature/ui/views/session_stats_view.dart';
 
 class SessionInfoView extends StatelessWidget {
   final SessionModel sessionModel;
@@ -87,9 +88,12 @@ class SessionInfoView extends StatelessWidget {
                 ),
               ],
             ),
+            verticalSpace(2),
+            if (sessionModel.sessionType == SessionTypesEnum.video || sessionModel.sessionType == SessionTypesEnum.examAndVideo)
+              SessionStatsView(sessionId: sessionModel.id),
           ],
 
-          verticalSpace(3),
+          verticalSpace(1),
 
           // 3. Action Buttons - Tight and Fixed Sizing issue
           BlocBuilder<SessionCubit, SessionState>(

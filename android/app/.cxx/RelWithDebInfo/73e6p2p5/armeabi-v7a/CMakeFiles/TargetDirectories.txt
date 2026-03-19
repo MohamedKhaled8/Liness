@@ -1,2 +1,0 @@
-E:/liness/android/app/.cxx/RelWithDebInfo/73e6p2p5/armeabi-v7a/CMakeFiles/edit_cache.dir
-E:/liness/android/app/.cxx/RelWithDebInfo/73e6p2p5/armeabi-v7a/CMakeFiles/rebuild_cache.dir

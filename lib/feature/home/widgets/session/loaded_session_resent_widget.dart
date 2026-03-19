@@ -16,30 +16,29 @@ class LoadedSessionResentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10.sp),
-      child: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          var recentSessions = context.read<HomeCubit>().recentSessions;
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        var recentSessions = context.read<HomeCubit>().recentSessions;
 
-          return ListView.builder(
-            cacheExtent: 1000,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: recentSessions.length,
-            itemBuilder: (context, index) {
-              SessionResentModel session = recentSessions[index];
+        return ListView.separated(
+          cacheExtent: 500,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.only(bottom: 14.h),
+          itemCount: recentSessions.length,
+          separatorBuilder: (context, index) => SizedBox(height: 10.sp),
+          itemBuilder: (context, index) {
+            SessionResentModel session = recentSessions[index];
 
-              return SlideInCard(
-                screenWidth: screenWidth,
-                colorsList: colorsList,
-                session: session,
-                index: index,
-              );
-            },
-          );
-        },
-      ),
+            return SlideInCard(
+              screenWidth: screenWidth,
+              colorsList: colorsList,
+              session: session,
+              index: index,
+            );
+          },
+        );
+      },
     );
   }
 }

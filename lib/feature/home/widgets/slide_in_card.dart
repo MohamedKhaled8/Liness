@@ -4,6 +4,7 @@ import 'package:liness/core/utils/helper/extensions.dart';
 import 'package:screen_go/extensions/responsive_nums.dart';
 import 'package:screen_go/extensions/screen_type_value.dart';
 import 'package:screen_go/extensions/orienation_type_value.dart';
+import 'package:liness/core/utils/constant/change_translate_and_theme.dart';
 import 'package:liness/feature/home/data/model/session_resent_model.dart';
 import 'package:liness/core/utils/widgets/custom_teacher_resent_session.dart';
 
@@ -22,35 +23,45 @@ class SlideInCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _SlideInCardState createState() => _SlideInCardState();
+  State<SlideInCard> createState() => _SlideInCardState();
 }
 
 class _SlideInCardState extends State<SlideInCard>
     with TickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
+
+    bool isArabic = ChangeTranslateAndTheme.isArabic;
+
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 2500),
     );
 
-    // Delay the start of the animation based on the index
-    Future.delayed(Duration(milliseconds: 600 * widget.index), () {
-      _controller.forward();
-    });
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
 
+    // Slide from left → right (English) or right → left (Arabic)
+    double startX = isArabic ? 0.4 : -0.4;
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(-1, 0), // Start from the left
-      end: Offset.zero, // End at the original position
+      begin: Offset(startX, 0),
+      end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeInOut,
+      curve: Curves.easeOutCubic,
     ));
+
+    // Stagger: each card waits a bit after the previous one
+    int delay = (widget.index.clamp(0, 6)) * 150;
+    Future.delayed(Duration(milliseconds: delay), () {
+      if (mounted) _controller.forward();
+    });
   }
 
   @override
@@ -61,29 +72,36 @@ class _SlideInCardState extends State<SlideInCard>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.screenWidth,
+    return FadeTransition(
+      opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: InkWell(
-          onTap: () {
-            context.pushNamed(
-              Routes.sessionScreen,
-              arguments: widget.session.id,
-            );
-          },
-          child: TeacherResentSessionWidgets(
-            widthImage: 60.w,
-            heightImage: stv(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14.sp),
+            splashColor: Colors.white10,
+            highlightColor: Colors.transparent,
+            onTap: () {
+              context.pushNamed(
+                Routes.sessionScreen,
+                arguments: widget.session.id,
+              );
+            },
+            child: TeacherResentSessionWidgets(
+              widthImage: double.infinity,
+              heightImage: stv(
                 context: context,
-                mobile: otv(context: context, portrait: 13.h, landscape: 45.h),
-                tablet: otv(context: context, portrait: 13.h, landscape: 37.h),
-                desktop: 30.h),
-            image: widget.session.img,
-            imageTeacher: widget.session.name,
-            nameCource: widget.session.course,
-            index: widget.index,
-            colorsList: widget.colorsList,
+                mobile: otv(context: context, portrait: 10.h, landscape: 16.h),
+                tablet: otv(context: context, portrait: 9.h, landscape: 13.h),
+                desktop: 10.h,
+              ),
+              image: widget.session.img,
+              imageTeacher: widget.session.name,
+              nameCource: widget.session.course,
+              index: widget.index,
+              colorsList: widget.colorsList,
+            ),
           ),
         ),
       ),

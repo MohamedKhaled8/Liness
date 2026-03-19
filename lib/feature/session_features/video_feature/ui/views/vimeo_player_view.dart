@@ -8,12 +8,14 @@ class VimeoPlayerView extends StatefulWidget {
   final String vimeoId;
   final bool autoPlay;
   final bool mute;
+  final Function(double currentTime, double duration)? onVideoProgress;
 
   const VimeoPlayerView({
     super.key,
     required this.vimeoId,
     this.autoPlay = false,
     this.mute = false,
+    this.onVideoProgress,
   });
 
   @override
@@ -184,7 +186,22 @@ class _VimeoPlayerViewState extends State<VimeoPlayerView> {
           // Cancel external navigations
           return NavigationActionPolicy.CANCEL;
         },
-        onWebViewCreated: (controller) {},
+        onWebViewCreated: (controller) async {
+          controller.addJavaScriptHandler(
+            handlerName: 'videoProgress',
+            callback: (args) {
+              if (args.length >= 2 && widget.onVideoProgress != null) {
+                try {
+                  final double currentTime = double.parse(args[0].toString());
+                  final double duration = double.parse(args[1].toString());
+                  widget.onVideoProgress!(currentTime, duration);
+                } catch (e) {
+                  debugPrint('Error parsing vimeo progress: $e');
+                }
+              }
+            },
+          );
+        },
         onLoadStop: (controller, uri) async {
           await controller.evaluateJavascript(
             source: """
@@ -243,6 +260,15 @@ class _VimeoPlayerViewState extends State<VimeoPlayerView> {
       
       hideVimeoElements();
       setInterval(hideVimeoElements, 200);
+
+      setInterval(() => {
+        try {
+          const video = document.querySelector('video');
+          if (video && !video.paused && window.flutter_inappwebview) {
+            window.flutter_inappwebview.callHandler('videoProgress', video.currentTime || 0, video.duration || 1);
+          }
+        } catch(e) {}
+      }, 5000);
 
       const style = document.createElement('style');
       style.textContent = `

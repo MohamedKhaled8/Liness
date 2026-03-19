@@ -13,13 +13,19 @@ class HomeTeacherCardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        if (state is HomeLoadingState) {
-          return const ShimmerLoadingHome();
-        } else if (state is TeachersLoadedState ||
-            context.read<HomeCubit>().teachers.isNotEmpty) {
+        var cubit = context.read<HomeCubit>();
+
+        // 1. Data comes first! (No flicker)
+        if (cubit.teachers.isNotEmpty) {
           return const LoadedTeacherWidget();
         }
+        
+        // 2. Loading state
+        if (state is HomeLoadingState || state is HomeInitial) {
+          return const ShimmerLoadingHome();
+        }
 
+        // 3. Error state
         return const AppImageHelper(path: ImageAssetsManger.errornet);
       },
     );

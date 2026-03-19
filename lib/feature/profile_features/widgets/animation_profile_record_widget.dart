@@ -32,7 +32,9 @@ class _AnimatedProfileRecordWidgetState
 
     // تأخير الحركة بناءً على الفهرس
     Future.delayed(Duration(milliseconds: widget.index * 30), () {
-      _controller.forward();
+      if (mounted) {
+        _controller.forward();
+      }
     });
 
     _slideAnimation = Tween<Offset>(

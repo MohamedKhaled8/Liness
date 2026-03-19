@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:liness/core/utils/config/space.dart';
 import 'package:screen_go/extensions/responsive_nums.dart';
 import 'package:screen_go/extensions/screen_type_value.dart';
-import 'package:liness/core/utils/constant/color_manger.dart';
-import 'package:liness/core/utils/helper/app_image_helper.dart';
 import 'package:screen_go/extensions/orienation_type_value.dart';
-import 'package:liness/core/utils/constant/image_assets_manger.dart';
+import 'package:liness/core/utils/helper/app_image_helper.dart';
 import 'package:liness/core/utils/constant/change_translate_and_theme.dart';
 
-class TeacherResentSessionWidgets extends StatelessWidget {
+class TeacherResentSessionWidgets extends StatefulWidget {
   final double widthImage;
   final double heightImage;
   final String image;
@@ -29,161 +26,259 @@ class TeacherResentSessionWidgets extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<TeacherResentSessionWidgets> createState() =>
+      _TeacherResentSessionWidgetsState();
+}
+
+class _TeacherResentSessionWidgetsState
+    extends State<TeacherResentSessionWidgets>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _beamController;
+
+  @override
+  void initState() {
+    super.initState();
+    _beamController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _beamController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var isDarkMode = ChangeTranslateAndTheme.isDarkMode(context);
 
-    final colors = colorsList.isEmpty
+    final accentColors = widget.colorsList.isEmpty
         ? [
-            ColorsManger.primaryColor,
-            isDarkMode
-                ? const Color.fromARGB(255, 110, 72, 192)
-                // ignore: deprecated_member_use
-                : ColorsManger.black.withOpacity(0.2),
-            ColorsManger.gray,
-            ColorsManger.red,
-            ColorsManger.orange,
-            ColorsManger.pink,
-            ColorsManger.green,
-            ColorsManger.yellow,
+            const Color(0xFF6366F1),
+            const Color(0xFF8B5CF6),
+            const Color(0xFF06B6D4),
+            const Color(0xFFF59E0B),
+            const Color(0xFFEC4899),
+            const Color(0xFF10B981),
+            const Color(0xFFF97316),
           ]
-        : colorsList;
+        : widget.colorsList;
 
-    Color containerColor = colors[index % colors.length];
+    Color accent = accentColors[widget.index % accentColors.length];
 
-    String courseDisplayText = nameCource.replaceAll(RegExp(r'[()]'), '');
+    double imgSize = stv(
+      context: context,
+      mobile: otv(context: context, portrait: 30.sp, landscape: 30.sp),
+      tablet: otv(context: context, portrait: 34.sp, landscape: 28.sp),
+      desktop: 30.sp,
+    );
 
-    if (courseDisplayText.length > 48) {
-      int mid = courseDisplayText.length ~/ 2;
-      courseDisplayText =
-          '${courseDisplayText.substring(0, mid)}\n${courseDisplayText.substring(mid)}';
-    }
-
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: stv(
-            context: context,
-            mobile: otv(context: context, portrait: 1.w, landscape: 10.w),
-            tablet: otv(context: context, portrait: 1.w, landscape: 10.w),
-            desktop: 15.w),
-        vertical: stv(
-            context: context,
-            mobile: otv(context: context, portrait: 5.h, landscape: 15.h),
-            tablet: otv(context: context, portrait: 5.h, landscape: 15.h),
-            desktop: 10.h),
-      ),
-      width: MediaQuery.of(context).size.width * 0.85,
-      height: stv(
-          context: context,
-          mobile: null,
-          tablet: null,
-          desktop: MediaQuery.of(context).size.height * 0.3),
-      decoration: BoxDecoration(
-        color: ColorsManger.white,
-        borderRadius: BorderRadius.circular(20.sp),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 2),
-            color: isDarkMode
-                ? containerColor.withOpacity(0.8)
-                : Colors.black.withOpacity(0.3),
-            blurRadius: 2,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.topCenter,
-        children: [
-          Positioned(
-            left: 0.sp, // تحديد الموقع الأيسر
-            top: 0.sp,
-            bottom: 0.sp,
-            child: Image.asset(
-              ImageAssetsManger.sshapp2,
-              fit: BoxFit.cover,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4.sp),
+      child: AnimatedBuilder(
+        animation: _beamController,
+        builder: (context, child) {
+          return CustomPaint(
+            foregroundPainter: _BorderBeamPainter(
+              progress: _beamController.value,
+              color: accent,
+              borderRadius: 16.sp,
+            ),
+            child: child,
+          );
+        },
+        child: Container(
+          padding: EdgeInsets.all(12.sp),
+          decoration: BoxDecoration(
+            color: isDarkMode ? const Color(0xFF1E1E2C) : Colors.white,
+            borderRadius: BorderRadius.circular(16.sp),
+            boxShadow: [
+              BoxShadow(
+                color: accent.withOpacity(isDarkMode ? 0.06 : 0.12),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            border: Border.all(
+              color: accent.withOpacity(isDarkMode ? 0.15 : 0.12),
+              width: 0.8,
             ),
           ),
-          // الصورة في الركن الأيمن
-          Positioned(
-            right: 0.sp, // تحديد الموقع الأيمن
-            top: 0.sp,
-            bottom: 0.sp,
-            child: Image.asset(
-              ImageAssetsManger.sshapp2,
-              width: MediaQuery.of(context).size.width * 0.5, // عرض الصورة
-              fit: BoxFit.cover,
-            ),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              verticalSpace(12),
-              Flexible(
-                child: Text(
-                  courseDisplayText,
-                  style: TextStyle(
-                    fontSize: 16.5.sp,
-                    color: ColorsManger.black,
-                    fontWeight: FontWeight.bold,
+              // --- Teacher Image with Ring ---
+              Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [accent, accent.withOpacity(0.3)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  textAlign: TextAlign.center,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+                ),
+                child: Container(
+                  width: imgSize,
+                  height: imgSize,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
+                  child: ClipOval(
+                    child: AppImageHelper(
+                      path: widget.image,
+                      fit: BoxFit.cover,
+                      width: imgSize,
+                      height: imgSize,
+                    ),
+                  ),
                 ),
               ),
-              verticalSpace(1),
-              Flexible(
-                child: Text(
-                  imageTeacher,
-                  style: TextStyle(
-                    fontSize: 16.5.sp,
-                    color: ColorsManger.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                  softWrap:
-                      true, // يسمح بتقسيم النص على أسطر متعددة إذا لزم الأمر
-                  overflow: TextOverflow
-                      .ellipsis, // تقليص النص بإضافة النقاط الثلاثة في حال كان طويلًا جدًا
-                  maxLines: 2, // يمكنك ضبط الحد الأقصى لعدد الأسطر حسب الحاجة
+
+              SizedBox(width: 14.sp),
+
+              // --- Info Section ---
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.nameCource,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        color:
+                            isDarkMode ? Colors.white : const Color(0xFF111827),
+                        height: 1.2,
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 2.sp),
+                          child: Icon(
+                            Icons.person_outline_rounded,
+                            size: 14.sp,
+                            color: accent,
+                          ),
+                        ),
+                        SizedBox(width: 4.sp),
+                        Expanded(
+                          child: Text(
+                            widget.imageTeacher,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: isDarkMode
+                                  ? Colors.white70
+                                  : Colors.grey[600],
+                              height: 1.2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(width: 10.sp),
+
+              // --- Play Icon Action ---
+              Container(
+                padding: EdgeInsets.all(6.sp),
+                decoration: BoxDecoration(
+                  color: accent.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: accent,
+                  size: 18.sp,
                 ),
               ),
             ],
           ),
-          Positioned(
-            top: -heightImage / 2,
-            child: Container(
-              width: stv(
-                  context: context,
-                  mobile:
-                      otv(context: context, portrait: 46.sp, landscape: 43.sp),
-                  tablet: 47.sp,
-                  desktop: 42.sp),
-              height: stv(
-                  context: context,
-                  mobile:
-                      otv(context: context, portrait: 46.sp, landscape: 43.sp),
-                  tablet: 47.sp,
-                  desktop: 42.sp),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.sp),
-                border: Border.all(
-                  color: containerColor,
-                  width: 5,
-                ),
-              ),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100.sp),
-                  child: AppImageHelper(
-                    path: image,
-                    fit: BoxFit.cover,
-                  )),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
+}
+
+class _BorderBeamPainter extends CustomPainter {
+  final double progress;
+  final Color color;
+  final double borderRadius;
+
+  _BorderBeamPainter({
+    required this.progress,
+    required this.color,
+    required this.borderRadius,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final rRect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
+    final path = Path()..addRRect(rRect);
+
+    final metrics = path.computeMetrics().first;
+    final totalLength = metrics.length;
+
+    // Beam 1: Forward (Starts at Top-Left)
+    const beamLengthFactor = 0.18;
+    final start1 = totalLength * progress;
+    final end1 = start1 + (totalLength * beamLengthFactor);
+
+    Path beamPath1;
+    if (end1 > totalLength) {
+      beamPath1 = metrics.extractPath(start1, totalLength);
+      beamPath1.addPath(metrics.extractPath(0, end1 - totalLength), Offset.zero);
+    } else {
+      beamPath1 = metrics.extractPath(start1, end1);
+    }
+
+    // Beam 2: Forward but offset by 0.5 (starts from opposite corners)
+    final progress2 = (progress + 0.5) % 1.0;
+    final start2 = totalLength * progress2;
+    final end2 = start2 + (totalLength * beamLengthFactor);
+
+    Path beamPath2;
+    if (end2 > totalLength) {
+      beamPath2 = metrics.extractPath(start2, totalLength);
+      beamPath2.addPath(metrics.extractPath(0, end2 - totalLength), Offset.zero);
+    } else {
+      beamPath2 = metrics.extractPath(start2, end2);
+    }
+
+    final glowPaint = Paint()
+      ..color = color.withOpacity(0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.2
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+
+    final mainPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4
+      ..strokeCap = StrokeCap.round;
+
+    // Draw both paths
+    canvas.drawPath(beamPath1, glowPaint);
+    canvas.drawPath(beamPath1, mainPaint);
+    canvas.drawPath(beamPath2, glowPaint);
+    canvas.drawPath(beamPath2, mainPaint);
+  }
+
+  @override
+  bool shouldRepaint(_BorderBeamPainter oldDelegate) =>
+      oldDelegate.progress != progress || oldDelegate.color != color;
 }

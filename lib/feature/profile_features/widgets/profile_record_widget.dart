@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:liness/core/Router/routes.dart';
-import 'package:liness/core/utils/config/space.dart';
 import 'package:liness/core/utils/helper/extensions.dart';
-import 'package:screen_go/extensions/responsive_nums.dart';
 import 'package:liness/core/utils/constant/color_manger.dart';
 import 'package:liness/core/utils/helper/app_image_helper.dart';
-import 'package:screen_go/functions/screen_type_value_func.dart';
 import 'package:liness/core/utils/function/vibration_method.dart';
+import 'package:screen_go/extensions/responsive_nums.dart';
 import '../main_profile_feature/data/model/api/recorde_model.dart';
 import 'package:liness/core/utils/localization/app_localization.dart';
 import 'package:liness/core/utils/constant/change_translate_and_theme.dart';
@@ -24,152 +22,204 @@ class ProfileRecordWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isArabic = ChangeTranslateAndTheme.isArabic;
+    bool isDarkMode = ChangeTranslateAndTheme.isDarkMode(context);
+    bool isArabic = ChangeTranslateAndTheme.isArabic;
+    Color accentColor = pcBorderColors[index % pcBorderColors.length];
+
+    double heightCard = double.infinity;
+    double imageWidth = 35.w;
+
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(12.0.sp),
-      margin: EdgeInsets.symmetric(
-          vertical: 1.0.h,
-          horizontal:
-              stv(context: context, mobile: 2.w, tablet: 2.w, desktop: 2.w)),
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+      height: heightCard,
       decoration: BoxDecoration(
-        color: ColorsManger.white,
-        borderRadius: BorderRadius.circular(12.0.sp),
-        border: Border(
-          left: BorderSide(
-            color: pcBorderColors[index % pcBorderColors.length],
-            width: stv(
-                context: context, mobile: 1.3.w, tablet: 1.3.w, desktop: .5.w),
-          ),
-        ),
-        boxShadow: const [
+        color: isDarkMode ? const Color(0xFF1E1E2C) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 5.0,
-            spreadRadius: 2.0,
-            offset: Offset(0, 2),
+            color: accentColor.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
         ],
+        border: Border.all(
+          color: accentColor.withOpacity(0.12),
+          width: 1,
+        ),
       ),
-      child: Directionality(
-        textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment:
-              isArabic ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+      child: InkWell(
+        onTap: () => _handleNavigation(context),
+        borderRadius: BorderRadius.circular(20),
+        child: Row(
           children: [
-            Flexible(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0.sp),
-                child: AppImageHelper(
-                  path: recordModel.img,
-                  fit: BoxFit.fitWidth,
-                  width: double.infinity,
-                  height: stv(
-                      context: context,
-                      mobile: 200.h,
-                      tablet: 50.h,
-                      desktop: 50.h),
-                ),
-              ),
-            ),
-            verticalSpace(2),
-            Row(
+            // --- Image Section ---
+            Stack(
               children: [
-                const Icon(
-                  Icons.calendar_month,
-                  color: ColorsManger.black,
-                ),
-                horizintalSpace(3),
-                Text(
-                  recordModel.date,
-                  style: TextStyle(
-                    fontSize: 16.0.sp,
-                    fontWeight: FontWeight.bold,
-                    color: ColorsManger.black,
+                ClipRRect(
+                  borderRadius: isArabic
+                      ? const BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        )
+                      : const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                        ),
+                  child: AppImageHelper(
+                    path: recordModel.img,
+                    fit: BoxFit.cover,
+                    width: imageWidth,
+                    height: heightCard,
                   ),
                 ),
-                const Spacer(),
-                Container(
-                  height: 3.0.h,
-                  width: 3.0.w,
-                  decoration: const BoxDecoration(
-                    color: ColorsManger.green,
-                    shape: BoxShape.circle,
+
+                // Icon Overlay
+                Positioned(
+                  bottom: 8,
+                  right: isArabic ? null : 8,
+                  left: isArabic ? 8 : null,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: accentColor,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                        )
+                      ],
+                    ),
+                    child: Icon(
+                      recordModel.grade.isNotEmpty
+                          ? Icons.assignment_rounded
+                          : Icons.play_arrow_rounded,
+                      color: Colors.white,
+                      size: 16,
+                    ),
                   ),
                 ),
               ],
             ),
-            verticalSpace(2),
-            Align(
-              alignment:
-                  isArabic ? Alignment.centerRight : Alignment.centerLeft,
-              child: Text(
-                textAlign: TextAlign.center,
-                recordModel.name,
-                maxLines: 2, // السماح للنص بأن يظهر في سطرين كحد أقصى
-                softWrap: true, // السماح للنص بالانتقال إلى السطر التالي
-                style: TextStyle(
-                  fontSize: stv(
-                    context: context,
-                    mobile: 17.0.sp,
-                    tablet: 17.0.sp,
-                    desktop: 15.0.sp,
-                  ),
-                  color: Colors.black,
-                  overflow: TextOverflow
-                      .ellipsis, // إظهار ثلاث نقاط إذا كان النص طويلًا
+
+            // --- Content Section ---
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Date With Calendar Icon
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_month_rounded,
+                          size: 12,
+                          color: accentColor.withOpacity(0.7),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          recordModel.date,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color:
+                                isDarkMode ? Colors.white54 : Colors.grey[600],
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    // Title
+                    Text(
+                      recordModel.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color:
+                            isDarkMode ? Colors.white : const Color(0xFF111827),
+                        height: 1.2,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Status Badge
+                    if (recordModel.grade.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: ColorsManger.green.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          "${AppLocalizations.of(context)!.translate('Grades')}: ${recordModel.grade}",
+                          style: const TextStyle(
+                            color: ColorsManger.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: accentColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.translate('video'),
+                          style: TextStyle(
+                            color: accentColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
-            verticalSpace(1),
-            if (recordModel.grade.isNotEmpty) ...[
-              Text(
-                recordModel.grade,
-                style: TextStyle(
-                    fontSize: 18.0.sp,
-                    color: ColorsManger.black,
-                    overflow: TextOverflow.ellipsis),
-              ),
-              verticalSpace(2),
-            ],
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  handleTapVibration(() {
-                    if (recordModel.grade.isNotEmpty) {
-                      context.pushNamed(
-                        Routes.examScreen,
-                        arguments: [null, recordModel.id],
-                      );
-                    } else {
-                      context.pushNamed(
-                        Routes.sessionScreen,
-                        arguments: recordModel.id,
-                      );
-                    }
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorsManger.mainBlue,
-                ),
-                child: recordModel.grade.isNotEmpty
-                    ? Text(
-                        AppLocalizations.of(context)!.translate('Go to Exam'),
-                        style: TextStyle(
-                            color: ColorsManger.white, fontSize: 18.sp),
-                      )
-                    : Text(
-                        AppLocalizations.of(context)!
-                            .translate('Go to Session'),
-                        style: TextStyle(
-                            color: ColorsManger.white, fontSize: 18.sp),
-                      ),
+
+            // --- Navigation Arrow ---
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Icon(
+                isArabic
+                    ? Icons.chevron_left_rounded
+                    : Icons.chevron_right_rounded,
+                color: accentColor.withOpacity(0.3),
+                size: 24,
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _handleNavigation(BuildContext context) {
+    handleTapVibration(() {
+      if (recordModel.grade.isNotEmpty) {
+        context.pushNamed(
+          Routes.examScreen,
+          arguments: [null, recordModel.id],
+        );
+      } else {
+        context.pushNamed(
+          Routes.sessionScreen,
+          arguments: recordModel.id,
+        );
+      }
+    });
   }
 }

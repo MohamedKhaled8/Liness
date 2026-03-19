@@ -2,7 +2,7 @@ name: liness
 description: A new Flutter project.
 publish_to: 'none' # Prevent publishing to pub.dev
 
-version: 2.0.0+41
+version: 2.0.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -51,7 +51,7 @@ dependencies:
   http:
   device_info_plus:
   draggable_fab: ^0.1.4
-  # device_preview: ^1.2.0
+  # device_preview: ^1.2.0                    
   awesome_dialog:
   curved_navigation_bar: ^1.0.6
   upgrader: ^11.3.1
@@ -80,6 +80,7 @@ dependencies:
   firebase_core: ^3.15.2
   firebase_crashlytics: ^4.3.10
   audioplayers: ^6.1.0
+  onesignal_flutter: ^5.4.5
 
 
  
@@ -113,7 +114,6 @@ flutter:
     - assets/images/svg/
     - assets/images/json/
     - assets/localization/
-    - shorebird.yaml
 
   fonts:
     - family: Intel

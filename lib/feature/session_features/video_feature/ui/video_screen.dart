@@ -20,7 +20,8 @@ import 'package:liness/feature/session_features/video_feature/ui/views/youtube_v
 import 'package:liness/core/utils/networking/api_constant.dart';
 import 'package:screen_go/extensions/responsive_nums.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:liness/core/utils/helper/cash_helper.dart';
+import 'package:liness/core/utils/dependency/get_it.dart';
 class VideoScreen extends StatefulWidget {
   const VideoScreen({super.key});
 
@@ -30,6 +31,21 @@ class VideoScreen extends StatefulWidget {
 
 class _VideoScreenState extends State<VideoScreen> {
   final GlobalKey _playerKey = GlobalKey();
+
+  void _updateVideoProgress(int? sessionId, double currentTime, double duration) {
+    if (sessionId == null || duration <= 0) return;
+    
+    int percent = ((currentTime / duration) * 100).toInt();
+    if (percent > 100) percent = 100;
+    if (percent < 0) percent = 0;
+    
+    int minutes = (currentTime / 60).floor();
+    int seconds = (currentTime % 60).floor();
+    String timeStr = '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    
+    getIt<CacheHelper>().saveData(key: 'watch_percent_x_$sessionId', value: percent);
+    getIt<CacheHelper>().saveData(key: 'stopped_time_x_$sessionId', value: timeStr);
+  }
 
   @override
   void initState() {
@@ -607,6 +623,7 @@ class _VideoScreenState extends State<VideoScreen> {
       return const Center(child: LoadingIndicator());
 
     final videoLink = videoCubit.videoModel!.videoLink;
+    final sessionId = videoCubit.currentSessionId;
 
     // Improved detection: if it's already an ID (not starting with http), it's likely Vimeo
     final isVimeo = !videoLink.startsWith("http") &&
@@ -614,19 +631,32 @@ class _VideoScreenState extends State<VideoScreen> {
         !videoLink.contains("youtu.be");
 
     if (isVimeo) {
-      return VimeoPlayerView(autoPlay: true, vimeoId: videoLink);
+      return VimeoPlayerView(
+        autoPlay: true, 
+        vimeoId: videoLink,
+        onVideoProgress: (currentTime, duration) => _updateVideoProgress(sessionId, currentTime, duration),
+      );
     } else {
       final videoId = getYouTubeVideoId(videoLink);
       if (videoId == null || videoId.isEmpty) {
         // One last fallback: if it's already an 11-char ID but getYouTube didn't catch it
         if (videoLink.length == 11 && !videoLink.contains("/")) {
           return YoutubePlayerView(
-              autoPlay: true, mute: false, videoId: videoLink);
+            autoPlay: true, 
+            mute: false, 
+            videoId: videoLink,
+            onVideoProgress: (currentTime, duration) => _updateVideoProgress(sessionId, currentTime, duration),
+          );
         }
         return const Center(
             child: Icon(Icons.error_outline, color: Colors.red, size: 48));
       }
-      return YoutubePlayerView(autoPlay: true, mute: false, videoId: videoId);
+      return YoutubePlayerView(
+        autoPlay: true, 
+        mute: false, 
+        videoId: videoId,
+        onVideoProgress: (currentTime, duration) => _updateVideoProgress(sessionId, currentTime, duration),
+      );
     }
   }
 }

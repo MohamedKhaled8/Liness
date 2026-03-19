@@ -92,18 +92,9 @@ class _SafeNavigationWrapperState extends State<SafeNavigationWrapper> {
   @override
   Widget build(BuildContext context) {
     return MouseTrackerWrapper(
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        transitionBuilder: (child, animation) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
-        child: Container(
-          key: ValueKey(widget.currentIndex),
-          child: widget.screens[widget.currentIndex],
-        ),
+      child: IndexedStack(
+        index: widget.currentIndex,
+        children: widget.screens,
       ),
     );
   }

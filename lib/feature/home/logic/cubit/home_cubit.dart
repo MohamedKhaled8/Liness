@@ -47,7 +47,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadImages() async {
     if (isClosed) return;
-    emit(HomeLoadingState());
+    if (images.isEmpty) emit(HomeLoadingState());
     final result = await HomeRepository().fetchImages();
 
     result.fold(
@@ -74,7 +74,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadTeachers() async {
     if (isClosed) return;
-    emit(HomeLoadingState());
+    if (teachers.isEmpty) emit(HomeLoadingState());
 
     final result = await _repository.fetchTeachers();
 
@@ -97,7 +97,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadSessionResent() async {
     if (isClosed) return;
-    emit(HomeLoadingState());
+    if (recentSessions.isEmpty) emit(HomeLoadingState());
     final result = await _repository.fetchSessionResent();
     result.fold(
       (errMessage) {
@@ -118,7 +118,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> getPackagesData() async {
     if (isClosed) return;
-    emit(HomeLoadingState());
+    if (packagesModelList.isEmpty) emit(HomeLoadingState());
 
     final result = await PackagesRepository.getPackagesData();
 

@@ -20,18 +20,23 @@ class HomeTeacherRecentSessionView extends StatelessWidget {
 
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        if (state is HomeLoadingState) {
-          return CustomShimmerSessionRecentWidget(screenWidth: screenWidth);
-        } else if (state is HomeErrorState) {
-          return const AppImageHelper(path: ImageAssetsManger.errornet);
-        } else if (state is SessionResentLoadedState ||
-            context.read<HomeCubit>().recentSessions.isNotEmpty) {
+        var cubit = context.read<HomeCubit>();
+
+        // 1. Data comes first
+        if (cubit.recentSessions.isNotEmpty) {
           return LoadedSessionResentWidget(
             screenWidth: screenWidth,
             colorsList: colorsList,
           );
         }
-        return const AppImageHelper(path: ImageAssetsManger.errornet ,);
+
+        // 2. Loading state
+        if (state is HomeLoadingState || state is HomeInitial) {
+          return CustomShimmerSessionRecentWidget(screenWidth: screenWidth);
+        }
+
+        // 3. Error state
+        return const AppImageHelper(path: ImageAssetsManger.errornet);
       },
     );
   }

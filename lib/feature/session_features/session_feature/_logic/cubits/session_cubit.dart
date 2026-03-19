@@ -10,6 +10,8 @@ import 'package:liness/core/utils/function/dialoge_error.dart';
 import 'package:liness/core/utils/function/show_localized_message.dart';
 import 'package:liness/core/utils/constant/change_translate_and_theme.dart';
 import 'package:liness/feature/session_features/session_feature/model/data/session_model.dart';
+import 'package:liness/core/utils/dependency/get_it.dart';
+import 'package:liness/core/utils/helper/cash_helper.dart';
 
 class SessionCubit extends Cubit<SessionState> {
   SessionCubit() : super(SessionStateInit());
@@ -125,6 +127,8 @@ class SessionCubit extends Cubit<SessionState> {
         ////
         sessionModel!.sessionTimes--;
         ////
+        _incrementEntryCount(sessionModel!.id);
+        ////
         context.pushReplacementNamed(
           Routes.videoScreen,
           arguments: sessionModel!.id,
@@ -134,6 +138,7 @@ class SessionCubit extends Cubit<SessionState> {
         ////
       } else if (sessionModel!.sessionType == SessionTypesEnum.examAndVideo) {
         if (sessionModel!.isExamDone) {
+          _incrementEntryCount(sessionModel!.id);
           context.pushReplacementNamed(
             Routes.videoScreen,
             arguments: sessionModel!.id,
@@ -153,6 +158,11 @@ class SessionCubit extends Cubit<SessionState> {
         );
       }
     }
+  }
+
+  Future<void> _incrementEntryCount(int sessionId) async {
+    int currentCount = getIt<CacheHelper>().getData(key: 'entry_count_x_$sessionId') ?? 0;
+    await getIt<CacheHelper>().saveData(key: 'entry_count_x_$sessionId', value: currentCount + 1);
   }
 
   Future<void> checkLoginAndShowMessage(BuildContext context) async {

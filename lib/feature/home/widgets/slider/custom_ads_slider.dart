@@ -14,16 +14,21 @@ class CardAdsSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
-      if (state is ImagesLoadedState ||
-          context.read<HomeCubit>().images.isNotEmpty) {
+      var cubit = context.read<HomeCubit>();
+
+      // 1. Data first
+      if (cubit.images.isNotEmpty) {
         return CustomImageLoadedWidget(
-          images: context.read<HomeCubit>().images,
+          images: cubit.images,
         );
       }
-      if (state is HomeLoadingState) {
+
+      // 2. Loading state
+      if (state is HomeLoadingState || state is HomeInitial) {
         return const CustomShimmerImageWidget();
       }
 
+      // 3. Error state
       return const AppImageHelper(path: ImageAssetsManger.errornet);
     });
   }

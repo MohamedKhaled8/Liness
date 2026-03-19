@@ -7,12 +7,14 @@ class YoutubePlayerView extends StatefulWidget {
   final String videoId;
   final bool autoPlay;
   final bool mute;
+  final Function(double currentTime, double duration)? onVideoProgress;
 
   const YoutubePlayerView({
     Key? key,
     required this.videoId,
     this.autoPlay = true,
     this.mute = false,
+    this.onVideoProgress,
   }) : super(key: key);
 
   @override
@@ -116,6 +118,22 @@ class _YoutubePlayerViewState extends State<YoutubePlayerView> {
               },
               onWebViewCreated: (controller) async {
                 _controller = controller;
+
+                // Add progress tracking handler
+                controller.addJavaScriptHandler(
+                  handlerName: 'videoProgress',
+                  callback: (args) {
+                    if (args.length >= 2 && widget.onVideoProgress != null) {
+                      try {
+                        final double currentTime = double.parse(args[0].toString());
+                        final double duration = double.parse(args[1].toString());
+                        widget.onVideoProgress!(currentTime, duration);
+                      } catch (e) {
+                        debugPrint('Error parsing video progress: $e');
+                      }
+                    }
+                  },
+                );
 
                 // Don't inject JavaScript immediately - wait for page to load first
                 // This prevents blocking YouTube's own scripts
@@ -725,6 +743,22 @@ class _YoutubePlayerViewState extends State<YoutubePlayerView> {
           }, 100);
         }, true);
       });
+
+      // Video Progress tracking
+      setInterval(() => {
+        try {
+          const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
+          if (video && !video.paused && window.flutter_inappwebview) {
+             const currentTime = video.currentTime;
+             const duration = video.duration;
+             if (duration > 0) {
+               window.flutter_inappwebview.callHandler('videoProgress', currentTime, duration);
+             }
+          }
+        } catch (e) {
+           console.log('Error reporting progress: ' + e);
+        }
+      }, 5000);
       
       // 🔥 ENHANCED SETTINGS MENU MONITORING - MORE OPTIONS REMOVAL
       const settingsMenuObserver = new MutationObserver(() => {

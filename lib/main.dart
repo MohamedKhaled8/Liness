@@ -12,6 +12,7 @@ import 'package:liness/core/utils/dependency/get_it.dart';
 import 'package:liness/core/utils/helper/cash_helper.dart';
 import 'package:liness/core/utils/helper/main_methods/main_method.dart';
 import 'package:liness/liness_app.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,27 @@ void main() async {
   final onboarding = getIt<CacheHelper>().getData(key: "onboarding") ?? false;
   ////
   await Firebase.initializeApp();
+
+  // --- إعدادات OneSignal للإشعارات ---
+  // (اختياري) يمكنك إيقاف التتبع عند رفع التطبيق للمتجر بـ OSLogLevel.none
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  
+  // تهيئة التطبيق باستخدام الـ App ID الخاص بك
+  OneSignal.initialize("4d270b5f-8c4e-4a87-811c-48e8949942b2");
+  
+  // طلب صلاحيات الإشعارات (مهم جداً لنظام iOS وأندرويد 13+)
+  OneSignal.Notifications.requestPermission(true);
+
+  // الاستماع للضغط على الإشعار (مفيد جداً إذا كنت تريد فتح صفحة معينة عند النقر عليه)
+  OneSignal.Notifications.addClickListener((event) {
+    debugPrint('تم الضغط على الإشعار: \${event.notification.jsonRepresentation()}');
+  });
+
+  // إجبار ظهور الإشعار كـ Popup من الأعلى حتى والتطبيق مفتوح أمام المستخدم
+  OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+    debugPrint('الإشعار وصل والتطبيق مفتوح.. سيتم عرضه فوراً!');
+    event.notification.display();
+  });
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   PlatformDispatcher.instance.onError = (error, stack) {
